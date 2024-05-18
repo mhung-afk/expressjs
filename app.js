@@ -6,6 +6,19 @@ dotenv.config();
 
 const app = express();
 
+
+const testMiddleware = (req, res, next) => {
+  if (true) {
+    console.log('match /api')
+    next()
+  }
+  else {
+    res.status(403).send('Forbidden')
+  }
+}
+// app.use(testMiddleware) // run middleware global
+app.use('/api', testMiddleware) // only run for /api
+
 // app.get('/', (req, res) => { // GET /
 //   res.status(200).json({message: "Hello"});
 // })
@@ -15,9 +28,18 @@ const app = express();
 // app.post('/users', (req, res) => {
 //   res.status(200).send('Post OK')
 // })
-app.use('/admin', adminRouter) // route - routing - router
-app.use('/users', userRouter)
+app.use('/api/admin', adminRouter) // route - routing - router
+app.use('/api/users', userRouter)
 
+/* middlewares - xử lý trung gian, trước khi request tới đc hàm xử lý cuối
+ * thêm data cho request, xử lý header, verify token, cookie, session
+ * 
+ * có thể thao tác với req và res
+ * 
+ * client --> backend middleware cho /api --> backend /api/product
+ * 
+ * có gọi hàm next() để tiếp tục routing
+ */
 
 app.listen(process.env.PORT, () => {
   console.log(`Example app listening on port ${process.env.PORT}`)

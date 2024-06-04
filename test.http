@@ -1,1 +1,6 @@
-GET http://localhost:8000/api/users/
+PUT http://localhost:8000/api/users/665f1fe2711674d025a34f2f
+Content-Type: application/json
+
+{
+    "name": "Test user re-updated 2"
+}

@@ -1,6 +1,4 @@
-PUT http://localhost:8000/api/users/665f1fe2711674d025a34f2f
-Content-Type: application/json
+GET http://localhost:8000/api/users?sortName=name&sortEmail=-email
 
-{
-    "name": "Test user re-updated 2"
-}
+
+GET http://localhost:8000/api/users?year=2007

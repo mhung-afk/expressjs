@@ -1,5 +1,6 @@
 import { Router } from "express";
 import User from '../models/User.js';
+import Ticket from "../models/Ticket.js";
 
 // Route /users
 const userRouter = Router()
@@ -76,12 +77,17 @@ userRouter.get('/:id', async (req, res) => {
     try {
         // const user = await User.findOne({_id: req.params.id})
         const user = await User.findById(req.params.id)
+        .populate('tickets')
         // const user = await User.findOne({_id: req.params.id}).select(['name', 'email', '-_id'])
         // const user = await User.findOne({_id: req.params.id}).select('-email')
 
         // handle date
         // const date = new Date(user.birthday);
         // date.setHours(date.getHours() + 7)
+
+        // const user = await Ticket.findById(ticketId)
+        //                     .populate('refUser')
+        //                     .select('refUser')
 
         res.status(200).json(user)
     } catch (error) {

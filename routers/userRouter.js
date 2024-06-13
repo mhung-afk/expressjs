@@ -13,7 +13,7 @@ const userRouter = Router()
  * group user based on year of birthday
  */
 userRouter.get('/', async (req, res) => {
-    const { sortName, sortEmail, limit=4, page=1, keyword, year } = req.query;
+    const { sortName, sortEmail, limit=4, page=1, keyword } = req.query;
     try {
         // sort
         // const users = await User.find()
@@ -41,20 +41,30 @@ userRouter.get('/', async (req, res) => {
         // res.status(200).json({ users, numPages })
 
         // search
-        // let keywordCondition = keyword ? 
-        // {
-        //     $or: [
-        //         {name: { $regex: keyword, $options: 'i' }}, // 'i' : insensitive
-        //         {email: { $regex: keyword, $options: 'i' }}
-        //     ]
-        // }
-        // : {}
-        // const users = await User.find(keywordCondition)
+        let keywordCondition = keyword ? 
+        {
+            $or: [
+                {name: { $regex: keyword, $options: 'i' }}, // 'i' : insensitive
+                {email: { $regex: keyword, $options: 'i' }}
+            ]
+        }
+        : {}
 
-        const users = await User.find({
-            birthday: '' /* năm === year */
-        })
-        res.status(200).json(users)
+        // cách 1
+        const users = await User.find(keywordCondition).sort(sortName)
+                        .skip(limit * (page - 1)).limit(limit)
+        const numUsers = await User.find(keywordCondition).count()
+
+        // cách 2
+        // const users = await User.find(keywordCondition).sort(sortName)
+        // const numUsers = users.length
+        // xây dựng thuật toán để từ paging
+        // TODO
+
+
+        const numPages = (numUsers % limit === 0) ? (numUsers / limit) : (numUsers / limit + 1)
+
+        res.status(200).json({users, numPages})
     } catch (error) {
         console.log(error)
         res.status(500).send('Internal Error')
@@ -74,6 +84,18 @@ userRouter.get('/:id', async (req, res) => {
         // date.setHours(date.getHours() + 7)
 
         res.status(200).json(user)
+    } catch (error) {
+        console.log(error)
+        res.status(500).send('Internal Error')
+    }
+})
+
+userRouter.get('/:id/tickets', async (req, res) => {
+    const id = req.params.id
+    try {
+        const user = await User.findById(id)
+        const vipTickets = user.tickets.filter(val => val.ticketType === 'VIP')
+        res.status(200).json(vipTickets)
     } catch (error) {
         console.log(error)
         res.status(500).send('Internal Error')

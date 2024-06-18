@@ -1,6 +1,7 @@
 import { Router } from "express";
 import User from '../models/User.js';
 import Ticket from "../models/Ticket.js";
+import { checkGetListQueryCommon } from '../middlewares/checkGetListQueryCommon.js';
 
 // Route /users
 const userRouter = Router()
@@ -13,8 +14,8 @@ const userRouter = Router()
  * search by keyword
  * group user based on year of birthday
  */
-userRouter.get('/', async (req, res) => {
-    const { sortName, sortEmail, limit=4, page=1, keyword } = req.query;
+userRouter.get('/', checkGetListQueryCommon, async (req, res) => {
+    const { sort, limit, page, keyword } = req.query;
     try {
         // sort
         // const users = await User.find()
@@ -52,7 +53,7 @@ userRouter.get('/', async (req, res) => {
         : {}
 
         // cách 1
-        const users = await User.find(keywordCondition).sort(sortName)
+        const users = await User.find(keywordCondition).sort(sort)
                         .skip(limit * (page - 1)).limit(limit)
         const numUsers = await User.find(keywordCondition).count()
 

@@ -1,4 +1,4 @@
-GET http://localhost:8000/api/users?sortName=name&keyword=a&page=2
+GET http://localhost:9000/api/users?sort=name,-email&limit=4
 
 
 GET http://localhost:8000/api/users/665f13431ceb5faad428100b/tickets

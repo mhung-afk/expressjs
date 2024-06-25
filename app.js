@@ -13,7 +13,7 @@ try {
 }
 
 const app = express();
-app.use(express.json())
+app.use(express.json()) // use this middleware for parsing request body to JS object format
 
 app.use('/api/users', userRouter)
 app.use('/api/tickets', ticketRouter)

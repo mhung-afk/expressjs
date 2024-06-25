@@ -2,6 +2,8 @@ import { Router } from "express";
 import User from '../models/User.js';
 import Ticket from "../models/Ticket.js";
 import { checkGetListQueryCommon } from '../middlewares/checkGetListQueryCommon.js';
+import { validateCreateUser } from "../middlewares/validateCreateUser.js";
+import { validateUpdateUser } from "../middlewares/validateUpdateUser.js";
 
 // Route /users
 const userRouter = Router()
@@ -110,20 +112,29 @@ userRouter.get('/:id/tickets', async (req, res) => {
 })
 
 // POST user
-userRouter.post('/', async (req, res) => {
+userRouter.post('/', validateCreateUser, async (req, res) => {
     const {name, email, birthday} = req.body
     try {
+        if (!!(await User.findOne({name}))) {
+            return res.status(400).json({
+                message: 'User existed'
+            })
+        }
+
         const user = await User.create({
             name: name,
             email: email,
             birthday: birthday,
         })
         res.status(200).json(user)
-    } catch (error) {}
+    } catch (error) {
+        console.log(error)
+        res.status(500).send('Internal Error')
+    }
 })
 
 // PUT user by id
-userRouter.put('/:id', async (req, res) => {
+userRouter.put('/:id', validateUpdateUser, async (req, res) => {
     const {name, email, birthday} = req.body
     try {
         const user = await User.findByIdAndUpdate(req.params.id, {

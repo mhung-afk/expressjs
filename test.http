@@ -1,4 +1,11 @@
 GET http://localhost:9999/api/users?sort=name,-email&limit=asdasd
 
 
-GET http://localhost:8000/api/users/665f13431ceb5faad428100b/tickets
+POST http://localhost:9000/api/users
+Content-Type: application/json
+
+{
+    "name": "456",
+    "email": "abc@xyz.com",
+    "birthday": "abc"
+}

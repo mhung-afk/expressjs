@@ -1,7 +1,10 @@
 import mongoose, { Schema } from 'mongoose';
 
 const userSchema = new Schema({
-  name: String,
+  name: {
+    type: String,
+    unique: true
+  },
   email: String,
   birthday: Date,
   // tickets: [
